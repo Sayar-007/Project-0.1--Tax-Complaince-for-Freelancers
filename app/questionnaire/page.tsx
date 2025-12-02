@@ -6,6 +6,8 @@ import { StepIndicator } from '@/components/ui/StepIndicator';
 import { CriticalAlertBanner } from '@/components/CriticalAlertBanner';
 import CompliancePlanView from '@/components/CompliancePlanView';
 import { QuestionnaireState, validateQuestionnaire } from '@/lib/questionnaireSchema';
+import { useSession } from 'next-auth/react'; // Import useSession
+import { useRouter } from 'next/navigation'; // Import useRouter
 
 // Initial empty state
 const INITIAL_STATE: QuestionnaireState = {
@@ -97,6 +99,16 @@ const QUESTIONS = [
 ];
 
 export default function QuestionnairePage() {
+  const { data: session, status } = useSession(); // Get session data
+  const router = useRouter();
+
+  // Redirect if not authenticated
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/login');
+    }
+  }, [status, router]);
+
   // State
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<QuestionnaireState>(INITIAL_STATE);
@@ -238,6 +250,15 @@ export default function QuestionnairePage() {
   };
 
   // Render
+  if (status === 'loading') {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+        <p className="ml-2 text-gray-600">Loading session...</p>
+      </div>
+    );
+  }
+
   if (generatedPlan) {
     return <CompliancePlanView plan={generatedPlan} userDetails={formData} />;
   }

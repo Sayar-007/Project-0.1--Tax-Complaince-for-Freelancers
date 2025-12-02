@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Download, Share2, Lock, Copy, Check } from 'lucide-react';
+import { Download, Share2, Lock, Copy, Check, Save } from 'lucide-react';
 import { QuestionnaireState } from '@/lib/questionnaireSchema';
 import { generatePDF } from '@/lib/pdfGenerator';
+import { useSession } from 'next-auth/react'; // Import useSession
 
 interface CompliancePlanViewProps {
   plan: string;
@@ -11,8 +12,11 @@ interface CompliancePlanViewProps {
 }
 
 export default function CompliancePlanView({ plan, userDetails }: CompliancePlanViewProps) {
+  const { data: session } = useSession(); // Get session data
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [isSavingPlan, setIsSavingPlan] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error' | 'loading'>('idle');
 
   const handleDownloadPdf = async () => {
     try {
@@ -64,6 +68,43 @@ export default function CompliancePlanView({ plan, userDetails }: CompliancePlan
     window.location.href = `mailto:?subject=${subject}&body=${body}`;
   };
 
+  const handleSavePlan = async () => {
+    if (!session?.user) {
+      alert("Please log in to save your plan.");
+      return;
+    }
+
+    setIsSavingPlan(true);
+    setSaveStatus('loading');
+    try {
+      const response = await fetch('/api/plans', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          planContent: plan,
+          sourceData: userDetails, // Save userDetails as sourceData
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to save plan');
+      }
+
+      setSaveStatus('success');
+      alert('Plan saved successfully!');
+    } catch (error: any) {
+      console.error('Error saving plan:', error);
+      setSaveStatus('error');
+      alert(`Error saving plan: ${error.message}`);
+    } finally {
+      setIsSavingPlan(false);
+      setTimeout(() => setSaveStatus('idle'), 3000); // Reset status after some time
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-4 md:p-8 bg-white shadow-xl rounded-xl my-8 border border-gray-100">
       {/* Header Actions */}
@@ -73,6 +114,22 @@ export default function CompliancePlanView({ plan, userDetails }: CompliancePlan
           <p className="text-sm text-gray-500 mt-1">Generated via Claude 3.5 Sonnet</p>
         </div>
         <div className="flex gap-2">
+          {session?.user && ( // Conditionally render Save Plan button
+            <button
+              onClick={handleSavePlan}
+              disabled={isSavingPlan || saveStatus === 'loading'}
+              className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md font-medium transition-colors disabled:opacity-50"
+              title="Save Plan"
+            >
+              {isSavingPlan ? (
+                <span className="flex items-center"><Save className="w-4 h-4 animate-spin mr-2" /> Saving...</span>
+              ) : saveStatus === 'success' ? (
+                <span className="flex items-center"><Check className="w-4 h-4 mr-2" /> Saved!</span>
+              ) : (
+                <span className="flex items-center"><Save className="w-4 h-4 mr-2" /> Save Plan</span>
+              )}
+            </button>
+          )}
           <button
             onClick={handleCopy}
             className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors"

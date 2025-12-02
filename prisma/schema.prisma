@@ -12,10 +12,21 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
+  id        String          @id @default(cuid())
   name      String?
-  email     String   @unique
+  email     String          @unique
   password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  plans     CompliancePlan[]
+}
+
+model CompliancePlan {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  planContent String   @db.Text
+  sourceData Json
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
