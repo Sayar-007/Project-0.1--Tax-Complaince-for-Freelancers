@@ -125,10 +125,9 @@ Generate a comprehensive, step-by-step compliance plan for this Indian freelance
     `;
 
     // 5. Call Gemini API
-    // Using gemini-1.5-flash-latest to ensure we get the latest stable version and trigger a file change
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash-latest",
+      model: "gemini-2.0-flash",
       systemInstruction: "You are an expert Indian Chartered Accountant (CA) specializing in cross-border taxation for freelancers and SMBs. Your responses must be specific to Indian tax law (FY 2024-25), action-oriented, risk-aware, and practical."
     });
 
