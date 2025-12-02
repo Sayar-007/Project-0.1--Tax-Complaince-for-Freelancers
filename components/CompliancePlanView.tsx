@@ -17,12 +17,29 @@ export default function CompliancePlanView({ plan, userDetails }: CompliancePlan
   const handleDownloadPdf = async () => {
     try {
       setIsGeneratingPdf(true);
-      const blob = await generatePDF(plan, userDetails);
+      
+      // Calling the new backend API
+      const response = await fetch('/api/download-pdf', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          plan,
+          userDetails
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Server failed to generate PDF");
+      }
+
+      const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
       const dateStr = new Date().toISOString().split('T')[0].replace(/-/g, '');
-      a.download = `ComplianceAlpha_Plan_${dateStr}.pdf`;
+      a.download = `ComplianceAlpha_Plan_${dateStr}_Server.pdf`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
