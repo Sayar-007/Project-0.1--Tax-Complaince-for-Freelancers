@@ -180,19 +180,22 @@ export default function QuestionnairePage() {
   };
 
   const handleNext = () => {
-    if (currentStep < QUESTIONS.length) {
-      // Check if next question should be shown
-      let nextStep = currentStep + 1;
-      while (nextStep <= QUESTIONS.length) {
-        const nextQ = QUESTIONS[nextStep - 1];
-        if (!nextQ.showIf || nextQ.showIf(formData)) {
-          break;
-        }
-        nextStep++;
+    let nextStep = currentStep + 1;
+
+    // Find the next valid step (skip hidden questions)
+    while (nextStep <= QUESTIONS.length) {
+      const nextQ = QUESTIONS[nextStep - 1];
+      if (!nextQ.showIf || nextQ.showIf(formData)) {
+        break;
       }
-      setCurrentStep(nextStep);
-    } else {
+      nextStep++;
+    }
+
+    // If we've gone past the last question, generate the plan
+    if (nextStep > QUESTIONS.length) {
       generatePlan();
+    } else {
+      setCurrentStep(nextStep);
     }
   };
 
