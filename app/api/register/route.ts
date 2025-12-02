@@ -12,14 +12,17 @@ const registerSchema = z.object({
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
+    console.log('Register API: Received request body:', body);
     const { name, email, password } = registerSchema.parse(body);
 
     // Check if user exists
+    console.log('Register API: Checking for existing user with email:', email);
     const existingUser = await prisma.user.findUnique({
       where: { email },
     });
 
     if (existingUser) {
+      console.log('Register API: User with this email already exists.');
       return NextResponse.json(
         { message: 'User with this email already exists' },
         { status: 409 }
@@ -27,9 +30,11 @@ export async function POST(req: NextRequest) {
     }
 
     // Hash password
+    console.log('Register API: Hashing password for user:', email);
     const hashedPassword = await hash(password, 12);
 
     // Create user
+    console.log('Register API: Creating user in database:', email);
     const user = await prisma.user.create({
       data: {
         name,
@@ -38,6 +43,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    console.log('Register API: User created successfully:', user.id);
     // Exclude password from response
     const { password: _, ...userWithoutPassword } = user;
 
@@ -46,6 +52,7 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     );
   } catch (error: any) {
+    console.error('Register API: Error caught:', error);
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { message: 'Invalid input', errors: error.errors },
@@ -53,6 +60,8 @@ export async function POST(req: NextRequest) {
       );
     }
     
+    // Log the full error object for better debugging
+    console.error('Register API: Full internal server error details:', error);
     return NextResponse.json(
       { message: 'Internal Server Error', error: error.message },
       { status: 500 }
