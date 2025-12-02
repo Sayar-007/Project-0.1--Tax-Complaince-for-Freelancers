@@ -7,7 +7,7 @@ ComplianceAlpha is an AI-powered compliance tool designed for Indian freelancers
 - **Framework:** Next.js 14 (App Router)
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS + shadcn/ui patterns
-- **AI:** Anthropic Claude 3.5 Sonnet API
+- **AI:** Google Gemini API (gemini-1.5-flash)
 - **PDF Generation:** jsPDF + jspdf-autotable
 - **Validation:** Zod
 - **Markdown:** react-markdown + remark-gfm
@@ -28,9 +28,9 @@ ComplianceAlpha is an AI-powered compliance tool designed for Indian freelancers
     ```bash
     cp .env.example .env.local
     ```
-2.  Add your Anthropic API key to `.env.local`:
-    ```
-    ANTHROPIC_API_KEY=your_actual_api_key_here
+2.  Add your Gemini API key to `.env.local`:
+    ```bash
+    GEMINI_API_KEY=your_actual_api_key_here
     ```
 
 ## Running Development Server
@@ -48,12 +48,12 @@ npm start
 ## Deployment Guide (Vercel)
 1.  Push your code to a GitHub repository.
 2.  Import the project into Vercel.
-3.  Add the `ANTHROPIC_API_KEY` in the Vercel Project Settings > Environment Variables.
+3.  Add the `GEMINI_API_KEY` in the Vercel Project Settings > Environment Variables.
 4.  Deploy.
 
 ## API Rate Limits & Costs
 -   The `generate-plan` API route implements a basic rate limiter (10 requests/IP/hour) to control costs.
--   Each plan generation consumes tokens via the Anthropic API. Monitor your usage in the Anthropic Console.
+-   Each plan generation consumes tokens via the Gemini API. Monitor your usage in the Google AI Studio Console.
 
 ## Known Issues / TODOs
 -   **Stripe Integration:** The UI includes a "Unlock Templates" button, but the actual payment processing logic is not yet implemented.

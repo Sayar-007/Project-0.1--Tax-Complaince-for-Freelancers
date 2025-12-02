@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Anthropic from '@anthropic-ai/sdk';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import { questionnaireSchema, QuestionnaireState } from '@/lib/questionnaireSchema';
 
 // In-memory rate limiter (simple implementation for demo)
@@ -27,7 +27,7 @@ function isRateLimited(ip: string): boolean {
 
 export async function POST(request: NextRequest) {
   // 1. Basic Environment Check
-  if (!process.env.ANTHROPIC_API_KEY) {
+  if (!process.env.GEMINI_API_KEY) {
     return NextResponse.json(
       { success: false, error: 'Server configuration error: API Key missing' },
       { status: 500 }
@@ -124,25 +124,16 @@ Generate a comprehensive, step-by-step compliance plan for this Indian freelance
 **Length:** Comprehensive (2000-2500 words).
     `;
 
-    // 5. Call Anthropic API
-    const anthropic = new Anthropic({
-      apiKey: process.env.ANTHROPIC_API_KEY,
+    // 5. Call Gemini API
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ 
+      model: "gemini-1.5-flash",
+      systemInstruction: "You are an expert Indian Chartered Accountant (CA) specializing in cross-border taxation for freelancers and SMBs. Your responses must be specific to Indian tax law (FY 2024-25), action-oriented, risk-aware, and practical."
     });
 
-    const msg = await anthropic.messages.create({
-      model: "claude-3-5-sonnet-20241022",
-      max_tokens: 4096,
-      temperature: 0.3,
-      system: "You are an expert Indian Chartered Accountant (CA) specializing in cross-border taxation for freelancers and SMBs. Your responses must be specific to Indian tax law (FY 2024-25), action-oriented, risk-aware, and practical.",
-      messages: [
-        { role: "user", content: userPrompt }
-      ],
-    });
-
-    // 6. Return Response
-    // msg.content is an array of ContentBlock, we need the text
-    const textBlock = msg.content[0];
-    const planText = textBlock.type === 'text' ? textBlock.text : "Error generating text.";
+    const result = await model.generateContent(userPrompt);
+    const response = await result.response;
+    const planText = response.text();
 
     return NextResponse.json({ success: true, plan: planText });
 
