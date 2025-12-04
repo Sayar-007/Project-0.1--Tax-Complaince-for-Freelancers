@@ -159,6 +159,30 @@ export default function QuestionnairePage() {
     setAlerts(newAlerts);
   }, [formData]);
 
+  // Loading Text Logic
+  const [loadingText, setLoadingText] = useState("Analyzing tax residency...");
+  
+  useEffect(() => {
+    if (!isGenerating) return;
+    
+    const messages = [
+      "Analyzing tax residency...",
+      "Checking DTAA rules...",
+      "Calculating tax liability...",
+      "Finalizing report..."
+    ];
+    
+    let i = 0;
+    setLoadingText(messages[0]);
+
+    const interval = setInterval(() => {
+      i = (i + 1) % messages.length;
+      setLoadingText(messages[i]);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [isGenerating]);
+
 
   // Handlers
   const handleOptionSelect = (field: keyof QuestionnaireState, value: any, isMulti: boolean = false) => {
@@ -275,84 +299,93 @@ export default function QuestionnairePage() {
       <div className="max-w-3xl mx-auto">
         <StepIndicator currentStep={currentStep} totalSteps={QUESTIONS.length} />
 
-        <div className="bg-white shadow-lg rounded-2xl p-6 md:p-10 mt-8 transition-all duration-300">
+        <div className="bg-white shadow-lg rounded-2xl p-6 md:p-10 mt-8 transition-all duration-300 min-h-[400px] flex flex-col justify-center">
           
-          {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-              {currentQuestion.question}
-            </h1>
-            <p className="text-slate-500 text-sm md:text-base bg-slate-50 p-3 rounded-lg border border-slate-100 inline-block">
-              💡 {currentQuestion.context}
-            </p>
-          </div>
+          {isGenerating ? (
+             <div className="flex flex-col items-center justify-center py-8 space-y-6">
+               <Loader2 className="w-16 h-16 text-blue-600 animate-spin" />
+               <p className="text-xl font-semibold text-slate-700 animate-pulse text-center">
+                 {loadingText}
+               </p>
+               <p className="text-slate-400 text-sm text-center max-w-md">
+                 This uses advanced AI to analyze your specific situation. It typically takes about 15-20 seconds. Please do not close this tab.
+               </p>
+             </div>
+          ) : (
+            <>
+              {/* Header */}
+              <div className="mb-8">
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+                  {currentQuestion.question}
+                </h1>
+                <p className="text-slate-500 text-sm md:text-base bg-slate-50 p-3 rounded-lg border border-slate-100 inline-block">
+                  💡 {currentQuestion.context}
+                </p>
+              </div>
 
-          {/* Options */}
-          <div className="space-y-3">
-            {currentQuestion.options.map((option) => {
-              const fieldVal = formData[currentQuestion.id as keyof QuestionnaireState];
-              const isSelected = Array.isArray(fieldVal) 
-                ? (fieldVal as string[]).includes(option.value)
-                : fieldVal === option.value;
+              {/* Options */}
+              <div className="space-y-3">
+                {currentQuestion.options.map((option) => {
+                  const fieldVal = formData[currentQuestion.id as keyof QuestionnaireState];
+                  const isSelected = Array.isArray(fieldVal) 
+                    ? (fieldVal as string[]).includes(option.value)
+                    : fieldVal === option.value;
 
-              return (
-                <button
-                  key={option.value}
-                  onClick={() => handleOptionSelect(currentQuestion.id as keyof QuestionnaireState, option.value, currentQuestion.multi)}
-                  className={`w-full text-left p-4 rounded-xl border-2 transition-all duration-200 flex items-center justify-between group
-                    ${isSelected 
-                      ? 'border-blue-600 bg-blue-50 shadow-sm' 
-                      : 'border-gray-200 hover:border-blue-300 hover:bg-slate-50'
-                    }`}
-                >
-                  <span className={`font-medium text-lg ${isSelected ? 'text-blue-900' : 'text-gray-700'}`}>
-                    {option.label}
-                  </span>
-                  <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
-                    ${isSelected ? 'border-blue-600 bg-blue-600' : 'border-gray-300 group-hover:border-blue-400'}`}>
-                    {isSelected && <div className="w-2 h-2 bg-white rounded-full" />}
-                  </div>
-                </button>
-              );
-            })}
-          </div>
+                  return (
+                    <button
+                      key={option.value}
+                      onClick={() => handleOptionSelect(currentQuestion.id as keyof QuestionnaireState, option.value, currentQuestion.multi)}
+                      className={`w-full text-left p-4 rounded-xl border-2 transition-all duration-200 flex items-center justify-between group
+                        ${isSelected 
+                          ? 'border-blue-600 bg-blue-50 shadow-sm' 
+                          : 'border-gray-200 hover:border-blue-300 hover:bg-slate-50'
+                        }`}
+                    >
+                      <span className={`font-medium text-lg ${isSelected ? 'text-blue-900' : 'text-gray-700'}`}>
+                        {option.label}
+                      </span>
+                      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
+                        ${isSelected ? 'border-blue-600 bg-blue-600' : 'border-gray-300 group-hover:border-blue-400'}`}>
+                        {isSelected && <div className="w-2 h-2 bg-white rounded-full" />}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
 
-          {/* Error Message */}
-          {error && (
-            <div className="mt-6 p-4 bg-red-50 text-red-700 rounded-lg flex items-center gap-2">
-              <AlertCircle className="w-5 h-5" />
-              {error}
-            </div>
-          )}
-
-          {/* Navigation */}
-          <div className="mt-10 flex justify-between items-center">
-            <button
-              onClick={handleBack}
-              disabled={currentStep === 1 || isGenerating}
-              className="flex items-center gap-2 px-6 py-3 text-gray-500 font-medium hover:text-gray-800 disabled:opacity-30 disabled:cursor-not-allowed"
-            >
-              <ArrowLeft className="w-5 h-5" />
-              Back
-            </button>
-
-            <button
-              onClick={handleNext}
-              disabled={!isStepValid() || isGenerating}
-              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-bold text-lg shadow-lg shadow-blue-200 disabled:opacity-50 disabled:shadow-none disabled:cursor-not-allowed transition-all transform active:scale-95"
-            >
-              {isGenerating ? (
-                <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  Generating Plan...
-                </>
-              ) : currentStep === QUESTIONS.length ? (
-                <>Generate My Plan <ArrowRight className="w-5 h-5" /></>
-              ) : (
-                <>Next <ArrowRight className="w-5 h-5" /></>
+              {/* Error Message */}
+              {error && (
+                <div className="mt-6 p-4 bg-red-50 text-red-700 rounded-lg flex items-center gap-2">
+                  <AlertCircle className="w-5 h-5" />
+                  {error}
+                </div>
               )}
-            </button>
-          </div>
+
+              {/* Navigation */}
+              <div className="mt-10 flex justify-between items-center">
+                <button
+                  onClick={handleBack}
+                  disabled={currentStep === 1}
+                  className="flex items-center gap-2 px-6 py-3 text-gray-500 font-medium hover:text-gray-800 disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  <ArrowLeft className="w-5 h-5" />
+                  Back
+                </button>
+
+                <button
+                  onClick={handleNext}
+                  disabled={!isStepValid()}
+                  className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-bold text-lg shadow-lg shadow-blue-200 disabled:opacity-50 disabled:shadow-none disabled:cursor-not-allowed transition-all transform active:scale-95"
+                >
+                  {currentStep === QUESTIONS.length ? (
+                    <>Generate My Plan <ArrowRight className="w-5 h-5" /></>
+                  ) : (
+                    <>Next <ArrowRight className="w-5 h-5" /></>
+                  )}
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>
