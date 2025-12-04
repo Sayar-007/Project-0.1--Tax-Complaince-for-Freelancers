@@ -4,14 +4,9 @@ const prismaClientSingleton = () => {
   console.log('Initializing PrismaClient...');
   
   if (!process.env.DATABASE_URL) {
-    const errorMessage = 'Error: DATABASE_URL is not set in environment variables. The application cannot connect to the database.';
-    console.error(errorMessage);
-    // In production/build, we want to fail hard if this is missing
-    if (process.env.NODE_ENV === 'production') {
-      throw new Error(errorMessage);
-    }
+    console.error('Error: DATABASE_URL is not set in environment variables. Prisma Client will fail to connect.');
   } else {
-    console.log('DATABASE_URL: Loaded');
+    console.log('DATABASE_URL: Found (length: ' + process.env.DATABASE_URL.length + ')');
   }
 
   return new PrismaClient()
