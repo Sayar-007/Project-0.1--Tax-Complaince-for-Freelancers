@@ -96,38 +96,38 @@ export default function CompliancePlanView({ plan, userDetails }: CompliancePlan
   return (
     <div className="max-w-4xl mx-auto p-4 md:p-8 bg-white shadow-xl rounded-xl my-8 border border-gray-100">
       {/* Header Actions */}
-      <div className="flex flex-col sm:flex-row justify-between items-center mb-8 pb-6 border-b border-gray-200 gap-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 pb-6 border-b border-gray-200 gap-4">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Your Compliance Roadmap</h2>
           <p className="text-sm text-gray-500 mt-1">Generated via Claude 3.5 Sonnet</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2 w-full sm:w-auto">
           {session?.user && ( // Conditionally render Save Plan button
             <button
               onClick={handleSavePlan}
               disabled={isSavingPlan || saveStatus === 'loading'}
-              className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md font-medium transition-colors disabled:opacity-50"
+              className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-md font-medium transition-colors disabled:opacity-50 flex-1 sm:flex-none"
               title="Save Plan"
             >
               {isSavingPlan ? (
-                <span className="flex items-center"><Save className="w-4 h-4 animate-spin mr-2" /> Saving...</span>
+                <><Save className="w-4 h-4 animate-spin" /> <span className="hidden sm:inline">Saving...</span></>
               ) : saveStatus === 'success' ? (
-                <span className="flex items-center"><Check className="w-4 h-4 mr-2" /> Saved!</span>
+                <><Check className="w-4 h-4" /> <span className="hidden sm:inline">Saved!</span></>
               ) : (
-                <span className="flex items-center"><Save className="w-4 h-4 mr-2" /> Save Plan</span>
+                <><Save className="w-4 h-4" /> <span className="hidden sm:inline">Save Plan</span></>
               )}
             </button>
           )}
           <button
             onClick={handleCopy}
-            className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
+            className="p-2 flex-1 sm:flex-none flex justify-center items-center text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors border sm:border-none border-gray-200"
             title="Copy to clipboard"
           >
             {copied ? <Check className="w-5 h-5 text-green-600" /> : <Copy className="w-5 h-5" />}
           </button>
           <button
             onClick={handleShareEmail}
-            className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
+            className="p-2 flex-1 sm:flex-none flex justify-center items-center text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors border sm:border-none border-gray-200"
             title="Share via Email"
           >
             <Share2 className="w-5 h-5" />
@@ -135,10 +135,10 @@ export default function CompliancePlanView({ plan, userDetails }: CompliancePlan
           <button
             onClick={handleDownloadPdf}
             disabled={isGeneratingPdf}
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium transition-colors disabled:opacity-50"
+            className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md font-medium transition-colors disabled:opacity-50 flex-1 sm:flex-none"
           >
             <Download className="w-4 h-4" />
-            {isGeneratingPdf ? 'Generating...' : 'Download PDF'}
+            <span className="hidden sm:inline">{isGeneratingPdf ? 'Generating...' : 'Download PDF'}</span>
           </button>
         </div>
       </div>

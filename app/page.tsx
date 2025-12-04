@@ -29,7 +29,7 @@ export default function Home() {
           </Link>
         </div>
 
-        <div className="pt-12 grid grid-cols-3 gap-8 text-center text-sm text-slate-500">
+        <div className="pt-12 grid grid-cols-1 sm:grid-cols-3 gap-8 text-center text-sm text-slate-500">
           <div>
             <strong className="block text-slate-900 text-lg mb-1">100%</strong>
             AI Generated

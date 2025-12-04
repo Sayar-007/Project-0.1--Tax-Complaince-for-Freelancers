@@ -341,10 +341,10 @@ export default function QuestionnairePage() {
                           : 'border-gray-200 hover:border-blue-300 hover:bg-slate-50'
                         }`}
                     >
-                      <span className={`font-medium text-lg ${isSelected ? 'text-blue-900' : 'text-gray-700'}`}>
+                      <span className={`font-medium text-lg flex-1 mr-4 ${isSelected ? 'text-blue-900' : 'text-gray-700'}`}>
                         {option.label}
                       </span>
-                      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
+                      <div className={`w-6 h-6 rounded-full border-2 flex-shrink-0 flex items-center justify-center
                         ${isSelected ? 'border-blue-600 bg-blue-600' : 'border-gray-300 group-hover:border-blue-400'}`}>
                         {isSelected && <div className="w-2 h-2 bg-white rounded-full" />}
                       </div>
