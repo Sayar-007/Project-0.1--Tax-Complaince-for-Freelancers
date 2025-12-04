@@ -99,7 +99,7 @@ export default function CompliancePlanView({ plan, userDetails }: CompliancePlan
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 pb-6 border-b border-gray-200 gap-4">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Your Compliance Roadmap</h2>
-          <p className="text-sm text-gray-500 mt-1">Generated via Claude 3.5 Sonnet</p>
+          <p className="text-sm text-gray-500 mt-1">Generated via Gemini 2.0 Flash</p>
         </div>
         <div className="flex flex-wrap gap-2 w-full sm:w-auto">
           {session?.user && ( // Conditionally render Save Plan button
