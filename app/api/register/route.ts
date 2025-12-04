@@ -10,6 +10,18 @@ const registerSchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
+  // 1. Safety Check for Environment Variables
+  if (!process.env.DATABASE_URL) {
+    console.error("Register API Error: DATABASE_URL is missing from environment variables.");
+    return NextResponse.json(
+      { 
+        message: 'Server Configuration Error: DATABASE_URL is missing. Please add it to Vercel Environment Variables.',
+        code: 'MISSING_ENV'
+      },
+      { status: 500 }
+    );
+  }
+
   try {
     const body = await req.json();
     console.log('Register API: Received request body:', body);
