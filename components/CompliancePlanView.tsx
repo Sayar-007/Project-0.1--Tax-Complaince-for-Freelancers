@@ -18,6 +18,8 @@ export default function CompliancePlanView({ plan, userDetails }: CompliancePlan
   const [isSavingPlan, setIsSavingPlan] = useState(false);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error' | 'loading'>('idle');
 
+  const [isDisclaimerChecked, setIsDisclaimerChecked] = useState(false);
+
   const handleDownloadPdf = async () => {
     try {
       setIsGeneratingPdf(true);
@@ -169,10 +171,30 @@ export default function CompliancePlanView({ plan, userDetails }: CompliancePlan
           <p className="text-slate-300 text-sm mt-1">
             Get ready-to-use W-8BEN, Invoice Formats, and Email Scripts.
           </p>
+          
+          <div className="mt-4 flex items-start gap-2">
+            <input 
+              type="checkbox" 
+              id="legal-disclaimer" 
+              className="mt-1 w-4 h-4 rounded border-slate-500 text-blue-600 focus:ring-blue-500"
+              checked={isDisclaimerChecked}
+              onChange={(e) => setIsDisclaimerChecked(e.target.checked)}
+            />
+            <label htmlFor="legal-disclaimer" className="text-xs text-slate-300 cursor-pointer select-none">
+              I understand this is an AI-generated report and does not constitute professional legal or tax advice.
+            </label>
+          </div>
         </div>
         <button 
-          className="bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-bold py-2 px-6 rounded-md transition-colors shadow-md whitespace-nowrap"
-          onClick={() => alert("Stripe integration coming soon!")}
+          className={`bg-yellow-400 text-slate-900 font-bold py-2 px-6 rounded-md transition-all shadow-md whitespace-nowrap
+            ${!isDisclaimerChecked ? 'opacity-50 cursor-not-allowed' : 'hover:bg-yellow-500 hover:shadow-lg'}
+          `}
+          onClick={() => {
+            if (isDisclaimerChecked) {
+              alert("Stripe integration coming soon!");
+            }
+          }}
+          disabled={!isDisclaimerChecked}
         >
           Buy for ₹499
         </button>
