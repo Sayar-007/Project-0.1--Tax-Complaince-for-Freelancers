@@ -53,17 +53,44 @@ export async function POST(req: NextRequest) {
     );
   } catch (error: any) {
     console.error('Register API: Error caught:', error);
+    
+    // Zod Validation Errors
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { message: 'Invalid input', errors: error.errors },
         { status: 400 }
       );
     }
+
+    // Prisma Errors (Common codes)
+    // P2021: Table does not exist
+    // P2002: Unique constraint failed
+    // P1001: Can't reach database
+    if (error.code === 'P2021') {
+      console.error("Register API: Table not found. Migrations likely not run.");
+      return NextResponse.json(
+        { message: 'Database not initialized (Table missing). Please run migrations.', code: 'P2021' },
+        { status: 500 }
+      );
+    }
     
+    if (error.code === 'P1001') {
+      console.error("Register API: Database connection failed.");
+      return NextResponse.json(
+        { message: 'Database connection failed. Check DATABASE_URL.', code: 'P1001' },
+        { status: 500 }
+      );
+    }
+
     // Log the full error object for better debugging
     console.error('Register API: Full internal server error details:', error);
+    
     return NextResponse.json(
-      { message: 'Internal Server Error', error: error.message },
+      { 
+        message: 'Internal Server Error', 
+        error: error.message || 'Unknown error',
+        code: error.code
+      },
       { status: 500 }
     );
   }
