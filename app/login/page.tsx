@@ -59,12 +59,12 @@ export default function LoginPage() {
       <div className="w-full max-w-md space-y-8 bg-white p-8 shadow rounded-lg">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Sign in to your account
+            Log in to your account
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
             Or{' '}
             <Link href="/signup" className="font-medium text-blue-600 hover:text-blue-500">
-              start your 14-day free trial
+              Sign up
             </Link>
           </p>
         </div>
@@ -130,7 +130,7 @@ export default function LoginPage() {
               className="group relative flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
             >
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Sign in
+              Log in
             </button>
           </div>
         </form>
