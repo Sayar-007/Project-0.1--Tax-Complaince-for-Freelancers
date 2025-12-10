@@ -33,3 +33,4 @@ ts-debug.log*
 .vercel
 
 /lib/generated/prisma
+*.tsbuildinfo
