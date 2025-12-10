@@ -444,6 +444,8 @@ export default function QuestionnairePage() {
                 {currentQ.type === 'text' && (
                   <input
                     type="text"
+                    id={currentQ.id}
+                    name={currentQ.id}
                     value={(formData[currentQ.id] as string) || ''}
                     onChange={(e) => handleValueChange(currentQ.id, e.target.value)}
                     placeholder={currentQ.placeholder}
@@ -454,6 +456,8 @@ export default function QuestionnairePage() {
                 {/* Textarea */}
                 {currentQ.type === 'textarea' && (
                   <textarea
+                    id={currentQ.id}
+                    name={currentQ.id}
                     value={(formData[currentQ.id] as string) || ''}
                     onChange={(e) => handleValueChange(currentQ.id, e.target.value)}
                     placeholder={currentQ.placeholder}
@@ -470,6 +474,7 @@ export default function QuestionnairePage() {
                       {[1, 2, 3, 4, 5].map((rate) => (
                         <button
                           key={rate}
+                          type="button" // Explicitly type button to prevent form submission if inside a form
                           onClick={() => handleValueChange(currentQ.id, rate)}
                           className={`w-12 h-12 rounded-full border-2 flex items-center justify-center font-bold text-lg transition-all
                             ${formData[currentQ.id] === rate 
@@ -494,9 +499,10 @@ export default function QuestionnairePage() {
                       multiple 
                       onChange={handleFileChange} 
                       className="hidden" 
-                      id="file-upload"
+                      id={currentQ.id}
+                      name={currentQ.id}
                     />
-                    <label htmlFor="file-upload" className="mt-4 inline-block px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 cursor-pointer">
+                    <label htmlFor={currentQ.id} className="mt-4 inline-block px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 cursor-pointer">
                       Select Files
                     </label>
                     {uploadedFiles.length > 0 && (
