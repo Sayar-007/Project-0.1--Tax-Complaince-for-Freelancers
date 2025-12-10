@@ -38,13 +38,17 @@ export async function generatePDF(plan: string, userDetails: QuestionnaireState)
   currentY += 5;
 
   const profileData = [
-    ["Entity Type", userDetails.entity_type === 'sole_prop' ? 'Sole Proprietor' : 'Pvt Ltd Company'],
-    ["Profession", userDetails.profession_nature === 'specified' ? 'Specified Profession' : 'Business/Trading'],
-    ["Turnover Range", userDetails.annual_turnover.replace(/_/g, ' ').toUpperCase()],
-    ["Client Locations", userDetails.client_countries.join(', ').toUpperCase()],
-    ["Payment Modes", userDetails.payment_modes.join(', ').toUpperCase()],
-    ["GST Registered", userDetails.gst_status.toUpperCase()],
-    ["LUT Filed", userDetails.lut_status ? userDetails.lut_status.toUpperCase() : 'N/A'],
+    ["Entity Type", userDetails.entity_type.replace(/_/g, ' ').toUpperCase()],
+    ["Profession", userDetails.profession],
+    ["Revenue", userDetails.revenue.replace(/_/g, ' ').toUpperCase()],
+    ["Client Locations", userDetails.client_location.join(', ').toUpperCase()],
+    ["Payment Methods", userDetails.payment_methods.join(', ').toUpperCase()],
+    ["GST Number", userDetails.gst_number.toUpperCase()],
+    ["LUT Filed", userDetails.lut_filed ? userDetails.lut_filed.replace(/_/g, ' ').toUpperCase() : 'N/A'],
+    ["Tax Forms", userDetails.tax_forms.replace(/_/g, ' ').toUpperCase()],
+    ["Capex", userDetails.capital_expenditure.replace(/_/g, ' ').toUpperCase()],
+    ["Investments", userDetails.investments.replace(/_/g, ' ').toUpperCase()],
+    ["Hiring", userDetails.hire_freelancers.toUpperCase()],
   ];
 
   autoTable(doc, {
