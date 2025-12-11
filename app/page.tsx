@@ -95,7 +95,7 @@ export default function LandingPage() {
               Your Compliance on Autopilot
             </h2>
             <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-              Answer 5 questions. Get a bulletproof roadmap. Sleep easy.
+              Answer 15 questions. Get a bulletproof roadmap. Sleep easy.
             </p>
           </div>
           <div className="space-y-16">
@@ -108,7 +108,7 @@ export default function LandingPage() {
                   </svg>
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-2xl font-bold text-slate-900 mb-3">Answer 5 Simple Questions</h3>
+                  <h3 className="text-2xl font-bold text-slate-900 mb-3">Answer 15 Simple Questions</h3>
                   <p className="text-lg text-slate-600 leading-relaxed">
                     We ask about your income sources (Upwork, Stripe, etc.), your total foreign earnings, whether you're registered under GST, and if you've filed an LUT. That's it. No tax jargon. No 20-page forms.
                   </p>
