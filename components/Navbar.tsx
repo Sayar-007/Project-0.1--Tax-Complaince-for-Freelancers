@@ -14,6 +14,12 @@ export default function Navbar() {
       <div className="flex gap-4">
         {session ? (
           <>
+            <Link
+              href="/dashboard"
+              className="text-sm font-medium text-gray-600 hover:text-gray-900 self-center"
+            >
+              Dashboard
+            </Link>
             <span className="text-sm text-gray-700 self-center">
               Hi, {session.user?.name || session.user?.email}
             </span>

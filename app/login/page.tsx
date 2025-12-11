@@ -46,7 +46,7 @@ export default function LoginPage() {
         return;
       }
 
-      router.push('/'); // Redirect to dashboard/home after login
+      router.push('/dashboard'); // Redirect to dashboard after login
       router.refresh();
     } catch (error) {
       setError('An unexpected error occurred');
